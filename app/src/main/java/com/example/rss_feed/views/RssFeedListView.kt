@@ -1,5 +1,6 @@
 package com.example.rss_feed.views
 
+import com.example.rss_feed.models.Feed
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle
 
@@ -10,6 +11,6 @@ import moxy.viewstate.strategy.alias.AddToEndSingle
 
 @AddToEndSingle
 interface RssFeedListView : MvpView {
-    fun onSuccessParse()
-    fun switchProgress(show: Boolean)
+    fun onSuccessParse(rssList: List<Feed>)
+    fun showError(message: String)
 }

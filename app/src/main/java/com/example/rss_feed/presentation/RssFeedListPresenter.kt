@@ -10,7 +10,4 @@ import moxy.MvpPresenter
 
 class RssFeedListPresenter : MvpPresenter<RssFeedListView>() {
 
-    fun getRssFeeds(url: String) {
-
-    }
 }

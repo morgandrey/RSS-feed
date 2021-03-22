@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.rss_feed.databinding.ActivityMainBinding
+import io.realm.Realm
 
 
 class MainActivity : AppCompatActivity() {
@@ -18,5 +19,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+
+        Realm.init(this)
     }
 }

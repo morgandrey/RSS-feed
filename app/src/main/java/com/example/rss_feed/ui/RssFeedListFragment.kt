@@ -1,20 +1,23 @@
 package com.example.rss_feed.ui
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.rss_feed.R
+import com.example.rss_feed.adapters.RssFeedAdapter
 import com.example.rss_feed.databinding.FragmentRssFeedListBinding
+import com.example.rss_feed.models.Feed
 import com.example.rss_feed.presentation.RssFeedListPresenter
 import com.example.rss_feed.views.RssFeedListView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.realm.Realm
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
@@ -27,6 +30,9 @@ class RssFeedListFragment : MvpAppCompatFragment(R.layout.fragment_rss_feed_list
 
     private val presenter: RssFeedListPresenter by moxyPresenter { RssFeedListPresenter() }
     private val binding: FragmentRssFeedListBinding by viewBinding()
+    private lateinit var realm: Realm
+
+    private inline fun <reified T> Gson.fromJson(json: String) = fromJson<T>(json, object: TypeToken<T>() {}.type)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,44 +41,29 @@ class RssFeedListFragment : MvpAppCompatFragment(R.layout.fragment_rss_feed_list
         return inflater.inflate(R.layout.fragment_rss_feed_list, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val navController = findNavController()
         binding.toolbar.setupWithNavController(navController)
+        realm = Realm.getDefaultInstance()
+        val feeds = Gson().fromJson<List<Feed>>(requireArguments().getString("feeds")!!)
+        setRecyclerView(feeds.sortedByDescending { x -> x.feedPubDate })
+    }
+
+    private fun setRecyclerView(rssList: List<Feed>) {
         with(binding) {
-            addRssButton.setOnClickListener {
-                val editText = EditText(requireContext())
-                val layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-                )
-                editText.layoutParams = layoutParams
-                AlertDialog.Builder(requireContext())
-                    .setTitle("RSS link")
-                    .setMessage("Please input rss link")
-                    .setView(editText)
-                    .setPositiveButton("OK") { _, _ ->
-
-                    }
-                    .setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-            }
-            deleteRssButton.setOnClickListener {
-
-            }
+            rssRecyclerView.visibility = View.VISIBLE
+            rssRecyclerView.layoutManager = LinearLayoutManager(activity)
+            rssRecyclerView.adapter = RssFeedAdapter(rssList)
         }
     }
 
-    override fun onSuccessParse() {
-        TODO("Not yet implemented")
+    override fun onSuccessParse(rssList: List<Feed>) {
+
     }
 
-    override fun switchProgress(show: Boolean) {
-        TODO("Not yet implemented")
+    override fun showError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
 }

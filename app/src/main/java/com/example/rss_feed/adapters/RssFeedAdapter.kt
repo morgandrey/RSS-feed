@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rss_feed.R
 import com.example.rss_feed.models.Feed
@@ -27,6 +29,11 @@ class RssFeedAdapter(private val dataSet: List<Feed>) :
             feedTitle.text = feed.feedTitle
             feedDate.text = feed.feedPubDate.toString()
             feedDescription.text = feed.feedDescription
+
+            itemView.setOnClickListener {
+                val bundle = bundleOf("feedLink" to feed.feedLink)
+                it.findNavController().navigate(R.id.action_rssFeedListFragment_to_rssFeedWebFragment, bundle)
+            }
         }
 
         companion object {

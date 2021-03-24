@@ -6,7 +6,15 @@
     <fragment
         android:id="@+id/rssFeedListFragment"
         android:name="com.example.rss_feed.ui.RssFeedListFragment"
-        android:label="News" />
+        android:label="News" >
+        <action
+            android:id="@+id/action_rssFeedListFragment_to_rssFeedWebFragment"
+            app:destination="@id/rssFeedWebFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/rssChannelListFragment"
         android:name="com.example.rss_feed.ui.RssChannelListFragment">
@@ -18,4 +26,8 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/rssFeedWebFragment"
+        android:name="com.example.rss_feed.ui.RssFeedWebFragment"
+        android:label="RssFeedWebFragment" />
 </navigation>
